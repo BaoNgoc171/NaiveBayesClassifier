@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 import java.nio.file.Paths;
 public class WordCounter {
@@ -6,6 +7,8 @@ public class WordCounter {
     private int wordSpam;
     private int timesFocusSpam;
     private int timesFocusNoSpam;
+    private double probabilityNoSpam;
+    private double probabilitySpam;
     //xác định focusWord, ko return j cả
     public WordCounter(String focusWord) {
         this.focus = focusWord;
@@ -23,30 +26,31 @@ public class WordCounter {
      và ghi vào bộ đếm
 
      */
-    public void addSample(String document) {
-
+    public void addSample(String document) throws IOException {
         try (Scanner scanner = new Scanner(Paths.get(document))) {
+            this.wordSpam = 0;
+            this.wordNoSpam = 0;
+            this.timesFocusNoSpam = 0;
+            this.timesFocusSpam = 0;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                while (scanner.hasNext()) {
-                    this.wordSpam = 0;
-                    this.wordNoSpam = 0;
-                    this.timesFocusNoSpam = 0;
-                    this.timesFocusSpam = 0;
                     if (line.contains("1")) {
-                        if (line.contains(this.focus)) {
-                            timesFocusSpam++;
+                        while (scanner.hasNext()) {
+                            wordSpam ++;
+                            if (line.contains(this.focus)) {
+                                timesFocusSpam++;
+                            }
                         }
                     } else {
-                        if (line.contains(this.focus)) {
-                            timesFocusNoSpam++;
+                        while (scanner.hasNext()) {
+                            wordNoSpam ++;
+                            if (line.contains(this.focus)) {
+                                timesFocusNoSpam++;
+                            }
                         }
                     }
-                }
             }
-        } catch (Exception e) {
         }
-
     }
 
 
@@ -58,7 +62,11 @@ public class WordCounter {
 
      */
     public boolean isCounterTrained() {
-        return true;
+        if (this.timesFocusSpam >= 1 && this.timesFocusNoSpam >= 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
     /*
     giả về giá trị probabilities bằng cách lấy
@@ -68,9 +76,25 @@ public class WordCounter {
 
      */
     public double getConditionalNoSpam() {
-        return 0;
+        if (isCounterTrained()) {
+            throw new IllegalStateException();
+        }
+        this.probabilityNoSpam = (double)timesFocusNoSpam / wordNoSpam;
+        return probabilityNoSpam ;
     }
     public double getConditionalSpam() {
-        return 0;
+        if (isCounterTrained()) {
+            throw new IllegalStateException();
+        }
+        this.probabilitySpam = (double)timesFocusSpam / wordSpam;
+        return this.probabilitySpam;
+    }
+
+    public static void main(String[] args) throws IOException {
+        WordCounter wc = new WordCounter("good");
+        System.out.println(wc.getFocusWord());
+        wc.addSample("1 good bad bad bad");
+        wc.addSample("0 bad good good");
+        wc.addSample("0 bad good");
     }
 }
