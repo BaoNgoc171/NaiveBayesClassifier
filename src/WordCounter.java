@@ -39,6 +39,16 @@ public class WordCounter {
         } catch (Exception e) {
         }
 
+    }
 
+
+    public boolean isCounterTrained() {
+        return true;
+    }
+    public double getConditionalNoSpam() {
+        return 0;
+    }
+    public double getConditionalSpam() {
+        return 0;
     }
 }
