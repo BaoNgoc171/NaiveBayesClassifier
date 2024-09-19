@@ -42,6 +42,10 @@ public class NaiveBayes {
      */
     public void classifyFile(File input, File output) throws IOException{}
 
+    /*
+    Same as trainClassifier method, which return an object of type ConfusionMatrix
+    with 4 accuracy measure in testdata file can be obtained
+     */
     public ConfusionMatrix computeAccuracy(File testdata) throws IOException{
         return new ConfusionMatrix();
     }
