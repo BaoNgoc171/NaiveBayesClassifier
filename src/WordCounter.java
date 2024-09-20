@@ -1,14 +1,14 @@
 import java.io.IOException;
 import java.util.Scanner;
 import java.nio.file.Paths;
+
 public class WordCounter {
+
     private final String focusWord;
     private int totalWordsInNoSpam;
     private int totalWordsInSpam;
     private int totalFocusWordsInNoSpam;
     private int totalFocusWordsInSpam;
-    private double probabilityNoSpam;
-    private double probabilitySpam;
 
     /* Constructor, initialize the variables
     * @param String focusWord
@@ -93,39 +93,35 @@ public class WordCounter {
         System.out.println("-------------------");
     }
 
-    /*xác định wordCounter train bằng cách:
-    xuất hiện ít nhất 1 lần => timesFocusSpam + timesFocusNoSpam >=1
-    xuất hiện ít nhất 1 lần trong spam =>  timesFocusSpam >=1
-    xuất hiện ít nhất 1 lần trong non spam => timeFocusNoSpam => 1
-    => 2 and 3 holds=> 1 holds => lấy 2 và 3
+    /* Check if the counter is trained or not
+    * @return boolean is counter trained
+    * */
+    public boolean isCounterTrained() {
+        return this.totalFocusWordsInNoSpam > 0
+                && this.totalFocusWordsInSpam > 0;
+    }
 
-     */
-//    public boolean isCounterTrained() {
-//        if (this.timesFocusSpam >= 1 && this.timesFocusNoSpam >= 1) {
-//            return true;
-//        } else {
-//            return false;
-//        }
-//    }
-//    /*
-//    giả về giá trị probabilities bằng cách lấy
-//    timeFocusNoSpam / wordNoSpam => no spam
-//    timeFocusSpam / wordSpam => spam
-//    nếu 2 method conditional được gọi trước isCounterTrained thì throw IllegalStateException
-//
-//     */
-//    public double getConditionalNoSpam() {
-//        if (isCounterTrained()) {
-//            throw new IllegalStateException();
-//        }
-//        this.probabilityNoSpam = (double)timesFocusNoSpam / wordNoSpam;
-//        return probabilityNoSpam ;
-//    }
-//    public double getConditionalSpam() {
-//        if (isCounterTrained()) {
-//            throw new IllegalStateException();
-//        }
-//        this.probabilitySpam = (double)timesFocusSpam / wordSpam;
-//        return this.probabilitySpam;
-//    }
+    /* Estimates for the probability for no spam that
+    * a random word from a document is the focus word.
+    * @return double the probability
+    * */
+    public double getConditionalNoSpam() {
+        // Shouldn't be called before the counter has trained
+        if (!isCounterTrained()) {
+            throw new IllegalStateException();
+        }
+        return (double) this.totalFocusWordsInNoSpam / this.totalWordsInNoSpam;
+    }
+
+    /* Estimates for the probability for spam that
+     * a random word from a document is the focus word.
+     * @return double the probability
+     * */
+    public double getConditionalSpam() {
+        // Shouldn't be called before the counter has trained
+        if (!isCounterTrained()) {
+            throw new IllegalStateException();
+        }
+        return (double) this.totalFocusWordsInSpam / this.totalWordsInSpam;
+    }
 }

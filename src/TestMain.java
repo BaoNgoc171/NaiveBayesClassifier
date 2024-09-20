@@ -20,6 +20,8 @@ public class TestMain {
         wc.addSample("0 bad good good");
         wc.addSample("0 bad good");
         wc.printInfo();
+        System.out.println(wc.getConditionalSpam());
+        System.out.println(wc.getConditionalNoSpam());
     }
 
     public static void testClassification()
