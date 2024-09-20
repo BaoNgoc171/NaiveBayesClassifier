@@ -1,4 +1,8 @@
 public class ConfusionMatrix {
+    private int trueNegatives;
+    private int truePositives;
+    private int falseNegatives;
+    private int falsePositives;
     /*
     true positive -> classifier predicts 1 for document has classification 1
     false positive-> classifier predicts 1 for document has classification 0
@@ -6,15 +10,19 @@ public class ConfusionMatrix {
     false negative -> classifier predicts 0 for document has classification 1
      */
     public int getTrueNegatives() {
-        return 0;
+        NaiveBayes objA = new NaiveBayes();
+        if (objA.classify(String unclassifiedDocument) == 1 && objA.classifyFile() == 1) {
+            trueNegatives ++;
+        }
+        return trueNegatives;
     }
     public int getTruePositives() {
-        return 0;
+        return truePositives;
     }
     public int getFalseNegatives() {
-        return 0;
+        return falseNegatives;
     }
     public int getFalsePositives() {
-        return 0;
+        return falsePositives;
     }
 }
