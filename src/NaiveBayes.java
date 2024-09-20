@@ -13,11 +13,11 @@ public class NaiveBayes {
     private double noSpamScore;
     private double spamScore;
 
-    /* Contructor, initialize variables
-    * @param String[] fiocus words
-    * */
+    /* Constructor, initialize variables
+    * @param String[] focus words
+    */
     public NaiveBayes(String[] focusWords) {
-        this.wordCounters = new ArrayList<WordCounter>();
+        this.wordCounters = new ArrayList<>();
         for (String focusWord : focusWords) {
             WordCounter wc = new WordCounter(focusWord);
             this.wordCounters.add(wc);
@@ -76,77 +76,77 @@ public class NaiveBayes {
     * @param File training file
     * */
     public void trainClassifier(File trainingFile) throws IOException{
-        Scanner scanner = new Scanner(trainingFile);
-        while (scanner.hasNextLine()) {
-            String document = scanner.nextLine();
-            addSample(document);
+        try (Scanner scanner = new Scanner(trainingFile)) {
+            while (scanner.hasNextLine()) {
+                String document = scanner.nextLine();
+                addSample(document);
+            }
         }
-        scanner.close();
     }
 
     /* Read the file and write the classify
     * results line by line to the output file
     * @param File input file
-    * @param File ouput file
+    * @param File output file
     * */
     public void classifyFile(File input, File output) throws IOException{
         // Read the input and classify
         ArrayList<Boolean> results = new ArrayList<>();
-        Scanner scanner = new Scanner(input);
-        while (scanner.hasNextLine()) {
-            String document = scanner.nextLine();
-            results.add(classify(document));
-        }
-        scanner.close();
-
-        // Write the results in output file
-        FileWriter fw = new FileWriter(output);
-        for (Boolean result : results) {
-            if (result) {
-                fw.write("1");
-                fw.write("\n");
-            } else {
-                fw.write("0");
-                fw.write("\n");
+        try (Scanner scanner = new Scanner(input)) {
+            while (scanner.hasNextLine()) {
+                String document = scanner.nextLine();
+                results.add(classify(document));
             }
         }
-        fw.close();
+
+        // Write the results in output file
+        try (FileWriter fw = new FileWriter(output)) {
+            for (Boolean result : results) {
+                if (result) {
+                    fw.write("1");
+                    fw.write("\n");
+                } else {
+                    fw.write("0");
+                    fw.write("\n");
+                }
+            }
+        }
     }
 
     public static void main(String[] args) throws IOException {
         String [] words = {"good", "bad"};
         NaiveBayes nb = new NaiveBayes(words);
-        nb.trainClassifier(new File("traindata.txt"));
-        nb.classifyFile(new File("newdata.txt"), new File("classifications.txt"));
+        nb.trainClassifier(new File("trainData.txt"));
+        nb.classifyFile(new File("newData.txt"), new File("classifications.txt"));
     }
 
-    public ConfusionMatrix computeAccuracy(File testdata) throws IOException{
-        ArrayList<Integer> groundtruthList = new ArrayList<>();
+    public ConfusionMatrix computeAccuracy(File testData) throws IOException{
+        ArrayList<Integer> groundTruthList = new ArrayList<>();
 
         // Read the input and classify
         ArrayList<Boolean> results = new ArrayList<>();
-        Scanner scanner = new Scanner(testdata);
-        while (scanner.hasNextLine()) {
-            String document = scanner.nextLine();
-            // Save the ground truth
-            groundtruthList.add((int) document.charAt(0));
-            // Strip the identifier at the beginning of each line
-            String unclassifiedDocument = document.substring(2);
-            results.add(classify(unclassifiedDocument));
+        try (Scanner scanner = new Scanner(testData)) {
+            while (scanner.hasNextLine()) {
+                String document = scanner.nextLine();
+                // Save the ground truth
+                groundTruthList.add((int) document.charAt(0));
+                // Strip the identifier at the beginning of each line
+                String unclassifiedDocument = document.substring(2);
+                results.add(classify(unclassifiedDocument));
+            }
         }
-        scanner.close();
 
         // Convert results boolean to integer
-        ArrayList<Integer> classifiedlist = new ArrayList<>();
+        ArrayList<Integer> classFieldList = new ArrayList<>();
         for (Boolean result : results) {
             if (result) {
-                classifiedlist.add(1);
+                classFieldList.add(1);
             } else {
-                classifiedlist.add(0);
+                classFieldList.add(0);
             }
         }
 
         // Construct confusion matrix
-        return new ConfusionMatrix(groundtruthList, classifiedlist);
+        return new ConfusionMatrix(groundTruthList, classFieldList);
     }
 }

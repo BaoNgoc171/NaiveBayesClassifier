@@ -1,6 +1,3 @@
-import java.io.IOException;
-import java.util.Scanner;
-import java.nio.file.Paths;
 
 public class WordCounter {
 
@@ -99,11 +96,7 @@ public class WordCounter {
     public boolean isCounterTrained() {
         if (this.totalFocusWordsInNoSpam + this.totalFocusWordsInSpam > 0 ) {
             if (this.totalWordsInSpam > 0) {
-                if (this.totalWordsInNoSpam > 0) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return this.totalWordsInNoSpam > 0;
             } else {
                 return false;
             }
