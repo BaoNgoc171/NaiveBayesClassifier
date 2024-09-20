@@ -97,8 +97,19 @@ public class WordCounter {
     * @return boolean is counter trained
     * */
     public boolean isCounterTrained() {
-        return this.totalFocusWordsInNoSpam > 0
-                && this.totalFocusWordsInSpam > 0;
+        if (this.totalFocusWordsInNoSpam + this.totalFocusWordsInSpam > 0 ) {
+            if (this.totalWordsInSpam > 0) {
+                if (this.totalWordsInNoSpam > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
     /* Estimates for the probability for no spam that

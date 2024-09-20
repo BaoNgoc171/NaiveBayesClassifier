@@ -52,10 +52,12 @@ public class NaiveBayes {
     public boolean classify(String unclassifiedDocument) {
         String[] words = unclassifiedDocument.split(" ");
         for (String word : words) {
+            computeSpamScore();
+            computeNoSpamScore();
             for (WordCounter wc : this.wordCounters) {
                 if (wc.getFocusWord().equals(word)) {
                     this.spamScore *= wc.getConditionalSpam();
-                    this.noSpamScore *= wc.getConditionalSpam();
+                    this.noSpamScore *= wc.getConditionalNoSpam();
                 }
             }
         }
@@ -64,12 +66,10 @@ public class NaiveBayes {
 
     private void computeSpamScore() {
         this.spamScore = (double) this.totalSpamDocuments / this.totalDocumentSeen;
-        System.out.println("Spam score: " + this.spamScore);
     }
 
     private void computeNoSpamScore() {
         this.noSpamScore = (double) this.totalNoSpamDocuments / this.totalDocumentSeen;
-        System.out.println("No Spam score: " + this.noSpamScore);
     }
 
     /* Read the file and process line by line
@@ -111,6 +111,13 @@ public class NaiveBayes {
             }
         }
         fw.close();
+    }
+
+    public static void main(String[] args) throws IOException {
+        String [] words = {"good", "bad"};
+        NaiveBayes nb = new NaiveBayes(words);
+        nb.trainClassifier(new File("traindata.txt"));
+        nb.classifyFile(new File("newdata.txt"), new File("classifications.txt"));
     }
 
     public ConfusionMatrix computeAccuracy(File testdata) throws IOException{
