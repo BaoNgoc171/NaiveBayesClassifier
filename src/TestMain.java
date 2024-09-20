@@ -8,7 +8,7 @@ public class TestMain {
     {
         testWordCounter();
         testClassification();
-//        testFileReadingWriting();
+        testFileReadingWriting();
 //        testConfusionMatrix();
     }
 
