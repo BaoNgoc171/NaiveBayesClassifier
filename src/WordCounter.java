@@ -26,31 +26,28 @@ public class WordCounter {
      và ghi vào bộ đếm
 
      */
-    public void addSample(String document) throws IOException {
-        try (Scanner scanner = new Scanner(Paths.get(document))) {
-            this.wordSpam = 0;
-            this.wordNoSpam = 0;
-            this.timesFocusNoSpam = 0;
-            this.timesFocusSpam = 0;
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                    if (line.contains("1")) {
-                        while (scanner.hasNext()) {
-                            wordSpam ++;
-                            if (line.contains(this.focus)) {
-                                timesFocusSpam++;
-                            }
-                        }
-                    } else {
-                        while (scanner.hasNext()) {
-                            wordNoSpam ++;
-                            if (line.contains(this.focus)) {
-                                timesFocusNoSpam++;
-                            }
-                        }
-                    }
+    public void addSample(String document) {
+        this.wordSpam = 0;
+        this.wordNoSpam = 0;
+        this.timesFocusNoSpam = 0;
+        this.timesFocusSpam = 0;
+        String[] words = document.split(" ");
+        if (document.startsWith("1")) {
+            for (int i = 1; i < words.length; i++) {
+                wordSpam ++;
+                if (words[i].equals(this.focus)) {
+                    timesFocusSpam++;
+                }
             }
-        }
+        } else {
+            for (int i = 1; i < words.length; i++) {
+                wordNoSpam ++;
+                if (words[i].equals(this.focus)) {
+                        timesFocusNoSpam++;
+                    }
+                }
+            }
+
     }
 
 
@@ -90,7 +87,7 @@ public class WordCounter {
         return this.probabilitySpam;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         WordCounter wc = new WordCounter("good");
         System.out.println(wc.getFocusWord());
         wc.addSample("1 good bad bad bad");

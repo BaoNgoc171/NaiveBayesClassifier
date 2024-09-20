@@ -8,10 +8,10 @@ public class ConfusionMatrix {
     public int getTrueNegatives() {
         return 0;
     }
-    public int getTruePositive() {
+    public int getTruePositives() {
         return 0;
     }
-    public int getFalseNegative() {
+    public int getFalseNegatives() {
         return 0;
     }
     public int getFalsePositives() {

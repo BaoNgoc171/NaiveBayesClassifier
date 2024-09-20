@@ -34,7 +34,7 @@ public class NaiveBayes {
     Calculate spam or no spam score P spam (non-spam) = # spam(non-spam) document seen / # total documents seen
      */
     public void addSample(String document) {
-        try (Scanner scanner = new Scanner(Paths.get(document))) {
+        /*try (Scanner scanner = new Scanner(Paths.get(document))) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 this.totalDocument ++;
@@ -44,7 +44,7 @@ public class NaiveBayes {
                     this.totalNumberNonSpam ++;
                 }
             }
-        }
+        }*/
         this.spamScore = (double)this.totalNumberSpam / this.totalDocument;
         this.nonSpamScore = (double)this.totalNumberNonSpam / this.totalDocument;
 
@@ -60,7 +60,7 @@ public class NaiveBayes {
     -> Compare whether no spam score < spam score
      */
     public boolean classify(String unclassifiedDocument) {
-        this.spamScore = this.spamScore.add
+        this.spamScore = (double)this.totalNumberSpam / this.totalDocument;
         this.nonSpamScore = (double)this.totalNumberNonSpam / this.totalDocument;
         return true;
     }
