@@ -2,9 +2,9 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.nio.file.Paths;
 public class WordCounter {
-    private String focusWord;
+    private final String focusWord;
     private int totalWordsInNoSpam;
-    private int totalWordInSpam;
+    private int totalWordsInSpam;
     private int totalFocusWordsInNoSpam;
     private int totalFocusWordsInSpam;
     private double probabilityNoSpam;
@@ -15,10 +15,10 @@ public class WordCounter {
     */
     public WordCounter(String focusWord) {
         this.focusWord = focusWord;
-        totalWordsInNoSpam = 0;
-        totalWordInSpam = 0;
-        totalFocusWordsInNoSpam = 0;
-        totalFocusWordsInSpam = 0;
+        this.totalWordsInNoSpam = 0;
+        this.totalWordsInSpam = 0;
+        this.totalFocusWordsInNoSpam = 0;
+        this.totalFocusWordsInSpam = 0;
     }
 
     /* Get the current focus word
@@ -36,7 +36,7 @@ public class WordCounter {
     public void addSample(String document) {
         String documentContent = getDocumentContent(document);
         if (isSpam(document)) {
-            this.totalWordInSpam += getTotalWordCount(documentContent);
+            this.totalWordsInSpam += getTotalWordCount(documentContent);
             this.totalFocusWordsInSpam += getTotalFocusWordCount(documentContent);
         } else {
             this.totalWordsInNoSpam += getTotalWordCount(documentContent);
@@ -84,6 +84,15 @@ public class WordCounter {
         return parts.length - 1;
     }
 
+    public void printInfo() {
+        System.out.println("Focus word: " + this.focusWord);
+        System.out.println("Total number of words in SPAM: " + this.totalWordsInSpam);
+        System.out.println("Total number of words in NO SPAM: " + this.totalWordsInNoSpam);
+        System.out.println("Total number of FOCUS words in SPAM: " + this.totalFocusWordsInSpam);
+        System.out.println("Total number of FOCUS words in NO SPAM: " + this.totalFocusWordsInNoSpam);
+        System.out.println("-------------------");
+    }
+
     /*xác định wordCounter train bằng cách:
     xuất hiện ít nhất 1 lần => timesFocusSpam + timesFocusNoSpam >=1
     xuất hiện ít nhất 1 lần trong spam =>  timesFocusSpam >=1
@@ -119,12 +128,4 @@ public class WordCounter {
 //        this.probabilitySpam = (double)timesFocusSpam / wordSpam;
 //        return this.probabilitySpam;
 //    }
-
-    public static void main(String[] args) {
-        WordCounter wc = new WordCounter("good");
-        System.out.println(wc.getFocusWord());
-        wc.addSample("1 good bad bad bad");
-        wc.addSample("0 bad good good");
-        wc.addSample("0 bad good");
-    }
 }

@@ -7,9 +7,9 @@ public class TestMain {
     public static void main(String [] args) throws IOException
     {
         testWordCounter();
-        testClassification();
-        testFileReadingWriting();
-        testConfusionMatrix();
+//        testClassification();
+//        testFileReadingWriting();
+//        testConfusionMatrix();
     }
 
     public static void testWordCounter()
@@ -19,8 +19,7 @@ public class TestMain {
         wc.addSample("1 good bad bad bad");
         wc.addSample("0 bad good good");
         wc.addSample("0 bad good");
-        System.out.println(wc.getConditionalSpam());
-        System.out.println(wc.getConditionalNoSpam());
+        wc.printInfo();
     }
 
     public static void testClassification()
