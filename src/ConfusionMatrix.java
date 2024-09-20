@@ -1,3 +1,5 @@
+import java.io.File;
+
 public class ConfusionMatrix {
     private int trueNegatives;
     private int truePositives;
@@ -36,7 +38,7 @@ public class ConfusionMatrix {
                 falsePositives ++;
             }
         } else {
-            if (objA.classifyFile() == 1) {
+            if (objA.classifyFile(File input, File output) == 1) {
                 falseNegatives ++;
             } else {
                 falsePositives ++;

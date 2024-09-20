@@ -1,6 +1,8 @@
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class NaiveBayes {
 
@@ -73,7 +75,20 @@ public class NaiveBayes {
     like addSample method
     If can not read, not exist => throws IOException. FileNotFoundException
      */
-    public void trainClassifier(File trainingFile) throws IOException{}
+    public void trainClassifier(File trainingFile) throws IOException{
+        BufferedReader line = null;
+        try {
+            line = new BufferedReader(new FileReader(trainingFile));
+            String fileContent;
+            while ((fileContent = line.readLine()) != null) {
+                addSample(fileContent);
+            }
+        }
+        catch (IOException e) {
+        }
+    }
+
+
 
     /*
     File input contain document without classification
