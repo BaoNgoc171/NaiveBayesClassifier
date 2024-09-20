@@ -1,6 +1,8 @@
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class NaiveBayes {
 
@@ -62,31 +64,82 @@ public class NaiveBayes {
 
     private void computeSpamScore() {
         this.spamScore = (double) this.totalSpamDocuments / this.totalDocumentSeen;
+        System.out.println("Spam score: " + this.spamScore);
     }
 
     private void computeNoSpamScore() {
         this.noSpamScore = (double) this.totalNoSpamDocuments / this.totalDocumentSeen;
+        System.out.println("No Spam score: " + this.noSpamScore);
     }
 
-    /*
-    All the classification line in trainingFile should be processed to train NaiveBayes objects
-    like addSample method
-    If can not read, not exist => throws IOException. FileNotFoundException
-     */
-    public void trainClassifier(File trainingFile) throws IOException{}
+    /* Read the file and process line by line
+    * @param File training file
+    * */
+    public void trainClassifier(File trainingFile) throws IOException{
+        Scanner scanner = new Scanner(trainingFile);
+        while (scanner.hasNextLine()) {
+            String document = scanner.nextLine();
+            addSample(document);
+        }
+        scanner.close();
+    }
 
-    /*
-    File input contain document without classification
-    Process the input file to spam(1) or not spam(0)
-    then the file output contain only classified document 1 or 0
-     */
-    public void classifyFile(File input, File output) throws IOException{}
+    /* Read the file and write the classify
+    * results line by line to the output file
+    * @param File input file
+    * @param File ouput file
+    * */
+    public void classifyFile(File input, File output) throws IOException{
+        // Read the input and classify
+        ArrayList<Boolean> results = new ArrayList<>();
+        Scanner scanner = new Scanner(input);
+        while (scanner.hasNextLine()) {
+            String document = scanner.nextLine();
+            results.add(classify(document));
+        }
+        scanner.close();
 
-    /*
-    Same as trainClassifier method, which return an object of type ConfusionMatrix
-    with 4 accuracy measure in testdata file can be obtained
-     */
+        // Write the results in output file
+        FileWriter fw = new FileWriter(output);
+        for (Boolean result : results) {
+            if (result) {
+                fw.write("1");
+                fw.write("\n");
+            } else {
+                fw.write("0");
+                fw.write("\n");
+            }
+        }
+        fw.close();
+    }
+
     public ConfusionMatrix computeAccuracy(File testdata) throws IOException{
-        return new ConfusionMatrix();
+        ArrayList<Integer> groundtruthList = new ArrayList<>();
+
+        // Read the input and classify
+        ArrayList<Boolean> results = new ArrayList<>();
+        Scanner scanner = new Scanner(testdata);
+        while (scanner.hasNextLine()) {
+            String document = scanner.nextLine();
+            // Save the ground truth
+            groundtruthList.add((int) document.charAt(0));
+            // Strip the identifier at the beginning of each line
+            String unclassifiedDocument = document.substring(2);
+            results.add(classify(unclassifiedDocument));
+        }
+        scanner.close();
+
+        // Convert results boolean to integer
+        ArrayList<Integer> classifiedlist = new ArrayList<>();
+        for (Boolean result : results) {
+            if (result) {
+                classifiedlist.add(1);
+            } else {
+                classifiedlist.add(0);
+            }
+        }
+
+        // Construct confusion matrix
+        return new ConfusionMatrix(groundtruthList, classifiedlist);
     }
 }
