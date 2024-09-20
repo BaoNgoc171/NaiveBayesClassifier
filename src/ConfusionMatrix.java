@@ -10,19 +10,38 @@ public class ConfusionMatrix {
     false negative -> classifier predicts 0 for document has classification 1
      */
     public int getTrueNegatives() {
-        NaiveBayes objA = new NaiveBayes();
-        if (objA.classify(String unclassifiedDocument) == 1 && objA.classifyFile() == 1) {
-            trueNegatives ++;
-        }
+        testMatrix();
         return trueNegatives;
     }
     public int getTruePositives() {
+        testMatrix();
         return truePositives;
     }
     public int getFalseNegatives() {
+        testMatrix();
         return falseNegatives;
     }
     public int getFalsePositives() {
+        testMatrix();
         return falsePositives;
     }
+    // determine whether the case is true or false, positive or negative
+    private void testMatrix() {
+        NaiveBayes objA = new NaiveBayes();
+
+        if (objA.classify() == 1) {
+            if (objA.classifyFile() == 1) {
+                trueNegatives ++;
+            } else {
+                falsePositives ++;
+            }
+        } else {
+            if (objA.classifyFile() == 1) {
+                falseNegatives ++;
+            } else {
+                falsePositives ++;
+            }
+        }
+    }
+
 }
