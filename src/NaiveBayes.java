@@ -1,68 +1,71 @@
 import java.io.File;
 import java.io.IOException;
-import java.net.PortUnreachableException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 public class NaiveBayes {
-    private List<WordCounter> wordCounters;
-    private int totalNumberSpam;
-    private int totalNumberNonSpam;
-    private int totalDocument;
+
+    private ArrayList<WordCounter> wordCounters;
+    private int totalDocumentSeen;
+    private int totalNoSpamDocuments;
+    private int totalSpamDocuments;
+    private double noSpamScore;
     private double spamScore;
-    private double nonSpamScore;
 
-    /*
-    String [] is an array of focusWords, ghi rõ số lượng private WordCounter objects
-    => each WordCounter respond 1 String from focusWords
-     */
+    /* Contructor, initialize variables
+    * @param String[] fiocus words
+    * */
     public NaiveBayes(String[] focusWords) {
-        this.totalNumberSpam = 0;
-        this.totalNumberNonSpam = 0;
-        this.totalDocument = 0;
-
-        this.wordCounters = new ArrayList<>();
+        this.wordCounters = new ArrayList<WordCounter>();
         for (String focusWord : focusWords) {
-            wordCounters.add(new WordCounter(focusWord));
+            WordCounter wc = new WordCounter(focusWord);
+            this.wordCounters.add(wc);
         }
+        this.totalDocumentSeen = 0;
+        this.totalNoSpamDocuments = 0;
+        this.totalSpamDocuments = 0;
+        this.noSpamScore = 0;
+        this.spamScore = 0;
     }
 
-    /* document be processed by all WordCounter object manage by NaiveBayes object
-    NaiveBayes object should have: total number of spam / non spam documents has seen
-    Calculate spam or no spam score P spam (non-spam) = # spam(non-spam) document seen / # total documents seen
-     */
+    /* When adding document sample, the class update
+    * word counters and keep track of the total number
+    * of spam and no spam documents.
+    *
+    * @param String document
+    * */
     public void addSample(String document) {
-        /*try (Scanner scanner = new Scanner(Paths.get(document))) {
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                this.totalDocument ++;
-                if (line.contains("1")) {
-                    this.totalNumberSpam ++;
-                } else {
-                    this.totalNumberNonSpam ++;
+        for (WordCounter wc : wordCounters) {
+            wc.addSample(document);
+            if (wc.isSpam(document)) {
+                this.totalSpamDocuments++;
+            } else {
+                this.totalNoSpamDocuments++;
+            }
+            this.totalDocumentSeen++;
+        }
+        computeNoSpamScore();
+        computeSpamScore();
+    }
+
+    public boolean classify(String unclassifiedDocument) {
+        String[] words = unclassifiedDocument.split(" ");
+        for (String word : words) {
+            for (WordCounter wc : this.wordCounters) {
+                if (wc.getFocusWord().equals(word)) {
+                    this.spamScore *= wc.getConditionalSpam();
+                    this.noSpamScore *= wc.getConditionalSpam();
                 }
             }
-        }*/
-        this.spamScore = (double)this.totalNumberSpam / this.totalDocument;
-        this.nonSpamScore = (double)this.totalNumberNonSpam / this.totalDocument;
-
+        }
+        return this.noSpamScore < this.spamScore;
     }
 
-    /*
-    Take over document without classification and determine probability between the document
-    is spam or not spam
-    Calculate initial document score by P both spam and not spam
-    -> check each word if NaiveBayes object hold a WordCounter contain the word as focusWord
-    -> If it is, calculate new spam/non-spam score by multiply each of that
-    with getConditionalSpam() or NoSpam() respectively
-    -> Compare whether no spam score < spam score
-     */
-    public boolean classify(String unclassifiedDocument) {
-        this.spamScore = (double)this.totalNumberSpam / this.totalDocument;
-        this.nonSpamScore = (double)this.totalNumberNonSpam / this.totalDocument;
-        return true;
+    private void computeSpamScore() {
+        this.spamScore = (double) this.totalSpamDocuments / this.totalDocumentSeen;
+    }
+
+    private void computeNoSpamScore() {
+        this.noSpamScore = (double) this.totalNoSpamDocuments / this.totalDocumentSeen;
     }
 
     /*

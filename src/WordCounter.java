@@ -59,7 +59,7 @@ public class WordCounter {
     * @param String document
     * @return boolean spam or no spam
     */
-    private boolean isSpam(String document) {
+    public boolean isSpam(String document) {
         return document.startsWith("1");
     }
 

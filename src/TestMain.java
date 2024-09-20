@@ -7,12 +7,12 @@ public class TestMain {
     public static void main(String [] args) throws IOException
     {
         testWordCounter();
-//        testClassification();
+        testClassification();
 //        testFileReadingWriting();
 //        testConfusionMatrix();
     }
 
-    public static void testWordCounter()
+    private static void testWordCounter()
     {
         WordCounter wc = new WordCounter("good");
         System.out.println(wc.getFocusWord());
@@ -24,7 +24,7 @@ public class TestMain {
         System.out.println(wc.getConditionalNoSpam());
     }
 
-    public static void testClassification()
+    private static void testClassification()
     {
         String [] words = {"good", "bad"};
         NaiveBayes nb = new NaiveBayes(words);
@@ -38,7 +38,7 @@ public class TestMain {
         System.out.println(nb.classify("casino"));
     }
 
-    public static void testFileReadingWriting() throws IOException
+    private static void testFileReadingWriting() throws IOException
     {
         String [] words = {"good", "bad"};
         NaiveBayes nb = new NaiveBayes(words);
@@ -46,7 +46,7 @@ public class TestMain {
         nb.classifyFile(new File("newdata.txt"), new File("classifications.txt"));
     }
 
-    public static void testConfusionMatrix() throws IOException
+    private static void testConfusionMatrix() throws IOException
     {
         String [] words = {"good", "bad"};
         NaiveBayes nb = new NaiveBayes(words);
